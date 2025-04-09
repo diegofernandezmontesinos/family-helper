@@ -1,0 +1,29 @@
+type List @model
+  @auth(rules: [{ allow: owner }]) {
+  id: ID!
+  name: String!
+  descripcion: String
+  listItems: [ListItem] @hasMany(indexName: "byList", fields: ["id"])  # Relación 1:N con ListItem
+}
+
+type ListItem @model
+  @auth(rules: [{ allow: owner }]) {
+  id: ID!
+  title: String!
+  quantity: Int
+  done: Boolean
+  listID: ID!   # Relación a List, que tendrá el índice
+  list: List @belongsTo(fields: ["listID"])  # Relación inversa con List
+  actions: [Action] @hasMany(indexName: "byListItem", fields: ["id"])  # Relación 1:N con Action
+  # Aplica el índice aquí en el campo listID
+}
+
+type Action @model
+  @auth(rules: [{ allow: owner }]) {
+  id: ID!
+  action: String
+  listItemID: ID!  # Relación a ListItem, que tendrá el índice
+  listItem: ListItem @belongsTo(fields: ["listItemID"])  # Relación inversa con ListItem
+  # Aplica el índice aquí en el campo listItemID
+
+}

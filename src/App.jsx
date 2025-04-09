@@ -1,21 +1,44 @@
-import "./App.css";
-import "@aws-amplify/ui-react/styles.css";
-import { Amplify } from "aws-amplify";
+/* eslint-disable no-unused-vars */
+import { Amplify, API, graphqlOperation } from "aws-amplify";
 import awsConfig from "./aws-exports";
-import { AmplifyAuthenticator, AmplifySignOut } from "@aws-amplify/ui-react";
+import { Authenticator } from "@aws-amplify/ui-react";
+import { useEffect, useState } from "react";
+import "@aws-amplify/ui-react/styles.css";
+import { listTodos } from "./graphql/queries";
+("../");
+import "./App.css";
 
 Amplify.configure(awsConfig);
 
 function App() {
+  const [varChange, setVarChange] = useState(false);
+  const [list, setList] = useState([]);
+
+  const fetchList = async () => {
+    const data = await API.graphql(graphqlOperation(listTodos));
+    setList(data.listTodos.items);
+  };
+
+  useEffect(() => {
+    fetchList();
+  }, [varChange]);
   return (
-    <AmplifyAuthenticator>
-      <>
-        <div className="App">
-          <h1>Welcome to Amplify</h1>
-        </div>
-        <AmplifySignOut />
-      </>
-    </AmplifyAuthenticator>
+    <Authenticator>
+      {({ signOut, user }) => (
+        <main>
+          <h1>Hello, {user?.username}</h1>
+          <ul>
+            {list.map((list) => (
+              <li key={list.id}>
+                <h2>{list.name}</h2>
+                <p>{list.description}</p>
+              </li>
+            ))}
+          </ul>
+          <button onClick={signOut}>Sign out</button>
+        </main>
+      )}
+    </Authenticator>
   );
 }
 
