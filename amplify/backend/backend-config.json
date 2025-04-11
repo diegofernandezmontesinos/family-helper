@@ -1,53 +1,33 @@
 {
-  "api": {
-    "familyhelper": {
-      "dependsOn": [],
-      "output": {
-        "authConfig": {
-          "additionalAuthenticationProviders": [
-            {
-              "authenticationType": "AMAZON_COGNITO_USER_POOLS",
-              "userPoolConfig": {
-                "userPoolId": "authfamilyhelperb28cdbf8"
-              }
-            }
-          ],
-          "defaultAuthentication": {
-            "apiKeyConfig": {
-              "apiKeyExpirationDays": 7
-            },
-            "authenticationType": "API_KEY"
-          }
-        }
-      },
+  "auth": {
+    "familyhelper33118859": {
+      "service": "Cognito",
       "providerPlugin": "awscloudformation",
-      "service": "AppSync"
+      "dependsOn": [],
+      "customAuth": false
     }
   },
-  "auth": {
-    "familyhelperb28cdbf8": {
-      "customAuth": false,
-      "dependsOn": [],
-      "frontendAuthConfig": {
-        "mfaConfiguration": "OFF",
-        "mfaTypes": [
-          "SMS"
-        ],
-        "passwordProtectionSettings": {
-          "passwordPolicyCharacters": [],
-          "passwordPolicyMinLength": 8
-        },
-        "signupAttributes": [
-          "EMAIL"
-        ],
-        "socialProviders": [],
-        "usernameAttributes": [],
-        "verificationMechanisms": [
-          "EMAIL"
-        ]
-      },
+  "api": {
+    "familyhelper": {
+      "service": "AppSync",
       "providerPlugin": "awscloudformation",
-      "service": "Cognito"
+      "output": {
+        "authConfig": {
+          "defaultAuthentication": {
+            "authenticationType": "AMAZON_COGNITO_USER_POOLS",
+            "userPoolConfig": {
+              "userPoolId": "authfamilyhelper33118859"
+            }
+          },
+          "additionalAuthenticationProviders": []
+        }
+      }
+    }
+  },
+  "storage": {
+    "familyHelperBucket": {
+      "service": "S3",
+      "providerPlugin": "awscloudformation"
     }
   }
 }
