@@ -1,11 +1,11 @@
 /* eslint-disable no-unused-vars */
-import { Amplify, API, graphqlOperation } from "aws-amplify";
+import { Amplify, API } from "aws-amplify";
+import { graphqlOperation } from "@aws-amplify/api-graphql";
 import awsConfig from "./aws-exports";
 import { Authenticator } from "@aws-amplify/ui-react";
 import { useEffect, useState } from "react";
 import "@aws-amplify/ui-react/styles.css";
-import { listTodos } from "./graphql/queries";
-("../");
+import { listLists } from "./graphql/queries";
 import "./App.css";
 
 Amplify.configure(awsConfig);
@@ -15,8 +15,12 @@ function App() {
   const [list, setList] = useState([]);
 
   const fetchList = async () => {
-    const data = await API.graphql(graphqlOperation(listTodos));
-    setList(data.listTodos.items);
+    try {
+      const result = await API.graphql(graphqlOperation(listLists));
+      setList(result.data.listLists.items);
+    } catch (error) {
+      console.error("Error fetching lists:", error);
+    }
   };
 
   useEffect(() => {
